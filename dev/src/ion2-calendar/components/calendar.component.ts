@@ -12,7 +12,10 @@ import {
 import { CalendarService } from '../services/calendar.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
+import * as toObject from 'dayjs/plugin/toObject';
+dayjs.extend(toObject);
+
 import { defaults, pickModes } from '../config';
 import {isIonIconsV4} from "../utils/icons";
 
@@ -204,22 +207,22 @@ export class CalendarComponent implements ControlValueAccessor, OnInit {
   }
 
   prevYear(): void {
-    if (moment(this.monthOpt.original.time).year() === 1970) { return; }
-    const backTime = moment(this.monthOpt.original.time)
+    if (dayjs(this.monthOpt.original.time).year() === 1970) { return; }
+    const backTime = dayjs(this.monthOpt.original.time)
       .subtract(1, 'year')
       .valueOf();
     this.monthOpt = this.createMonth(backTime);
   }
 
   nextYear(): void {
-    const nextTime = moment(this.monthOpt.original.time)
+    const nextTime = dayjs(this.monthOpt.original.time)
       .add(1, 'year')
       .valueOf();
     this.monthOpt = this.createMonth(nextTime);
   }
 
   nextMonth(): void {
-    const nextTime = moment(this.monthOpt.original.time)
+    const nextTime = dayjs(this.monthOpt.original.time)
       .add(1, 'months')
       .valueOf();
     this.monthChange.emit({
@@ -231,11 +234,11 @@ export class CalendarComponent implements ControlValueAccessor, OnInit {
 
   canNext(): boolean {
     if (!this._d.to || this._view !== 'days') { return true; }
-    return this.monthOpt.original.time < moment(this._d.to).valueOf();
+    return this.monthOpt.original.time < dayjs(this._d.to).valueOf();
   }
 
   backMonth(): void {
-    const backTime = moment(this.monthOpt.original.time)
+    const backTime = dayjs(this.monthOpt.original.time)
       .subtract(1, 'months')
       .valueOf();
     this.monthChange.emit({
@@ -247,12 +250,12 @@ export class CalendarComponent implements ControlValueAccessor, OnInit {
 
   canBack(): boolean {
     if (!this._d.from || this._view !== 'days') { return true; }
-    return this.monthOpt.original.time > moment(this._d.from).valueOf();
+    return this.monthOpt.original.time > dayjs(this._d.from).valueOf();
   }
 
   monthOnSelect(month: number): void {
     this._view = 'days';
-    const newMonth = moment(this.monthOpt.original.time)
+    const newMonth = dayjs(this.monthOpt.original.time)
       .month(month)
       .valueOf();
     this.monthChange.emit({
@@ -311,18 +314,18 @@ export class CalendarComponent implements ControlValueAccessor, OnInit {
 
   _onTouched: Function = () => {};
 
-  _payloadToTimeNumber(value: CalendarComponentPayloadTypes): number {
+  _payloadToTimeNumber(value: any | CalendarComponentPayloadTypes): number {
     let date;
     if (this.type === 'string') {
-      date = moment(value, this.format);
+      date = dayjs(value, this.format);
     } else {
-      date = moment(value);
+      date = dayjs(value);
     }
     return date.valueOf();
   }
 
   _monthFormat(date: number): string {
-    return moment(date).format(this._d.monthFormat.replace(/y/g, 'Y'));
+    return dayjs(date).format(this._d.monthFormat.replace(/y/g, 'Y'));
   }
 
   private initOpt(): void {
@@ -347,20 +350,19 @@ export class CalendarComponent implements ControlValueAccessor, OnInit {
   }
 
   _handleType(value: number): CalendarComponentPayloadTypes {
-    const date = moment(value);
+    const date = dayjs(value);
     switch (this.type) {
       case 'string':
         return date.format(this.format);
       case 'js-date':
         return date.toDate();
-      case 'moment':
+      case 'dayjs':
         return date;
       case 'time':
         return date.valueOf();
       case 'object':
         return date.toObject();
     }
-    return date;
   }
 
   writeValue(obj: any): void {

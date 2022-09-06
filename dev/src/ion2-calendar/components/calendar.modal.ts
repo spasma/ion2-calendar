@@ -12,7 +12,7 @@ import {
 import { NavParams, ModalController, IonContent } from '@ionic/angular';
 import { CalendarDay, CalendarMonth, CalendarModalOptions } from '../calendar.model';
 import { CalendarService } from '../services/calendar.service';
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 import { pickModes } from '../config';
 
 const NUM_OF_MONTHS_TO_CREATE = 3;
@@ -131,7 +131,7 @@ export class CalendarModal implements OnInit, AfterViewInit {
     }
 
     this.calendarMonths = this.calSvc.createMonthsByPeriod(
-      moment(this._d.from).valueOf(),
+      dayjs(this._d.from).valueOf(),
       this.findInitMonthNumber(this._d.defaultScrollTo) + this.step,
       this._d
     );
@@ -229,12 +229,12 @@ export class CalendarModal implements OnInit, AfterViewInit {
   nextMonth(event: any): void {
     const len = this.calendarMonths.length;
     const final = this.calendarMonths[len - 1];
-    const nextTime = moment(final.original.time)
+    const nextTime = dayjs(final.original.time)
       .add(1, 'M')
       .valueOf();
-    const rangeEnd = this._d.to ? moment(this._d.to).subtract(1, 'M') : 0;
+    const rangeEnd = this._d.to ? dayjs(this._d.to).subtract(1, 'M') : 0;
 
-    if (len <= 0 || (rangeEnd !== 0 && moment(final.original.time).isAfter(rangeEnd))) {
+    if (len <= 0 || (rangeEnd !== 0 && dayjs(final.original.time).isAfter(rangeEnd))) {
       event.target.disabled = true;
       return;
     }
@@ -252,7 +252,7 @@ export class CalendarModal implements OnInit, AfterViewInit {
       return;
     }
 
-    const firstTime = (this.actualFirstTime = moment(first.original.time)
+    const firstTime = (this.actualFirstTime = dayjs(first.original.time)
       .subtract(NUM_OF_MONTHS_TO_CREATE, 'M')
       .valueOf());
 
@@ -318,27 +318,27 @@ export class CalendarModal implements OnInit, AfterViewInit {
   }
 
   findInitMonthNumber(date: Date): number {
-    let startDate = this.actualFirstTime ? moment(this.actualFirstTime) : moment(this._d.from);
-    const defaultScrollTo = moment(date);
+    let startDate = this.actualFirstTime ? dayjs(this.actualFirstTime) : dayjs(this._d.from);
+    const defaultScrollTo = dayjs(date);
     const isAfter: boolean = defaultScrollTo.isAfter(startDate);
     if (!isAfter) return -1;
 
     if (this.showYearPicker) {
-      startDate = moment(new Date(this.year, 0, 1));
+      startDate = dayjs(new Date(this.year, 0, 1));
     }
 
     return defaultScrollTo.diff(startDate, 'month');
   }
 
   _getDayTime(date: any): number {
-    return moment(moment(date).format('YYYY-MM-DD')).valueOf();
+    return dayjs(dayjs(date).format('YYYY-MM-DD')).valueOf();
   }
 
   _monthFormat(date: any): string {
-    return moment(date).format(this._d.monthFormat.replace(/y/g, 'Y'));
+    return dayjs(date).format(this._d.monthFormat.replace(/y/g, 'Y'));
   }
 
-  trackByIndex(index: number, momentDate: CalendarMonth): number {
-    return momentDate.original ? momentDate.original.time : index;
+  trackByIndex(index: number, dayjsDate: CalendarMonth): number {
+    return dayjsDate.original ? dayjsDate.original.time : index;
   }
 }

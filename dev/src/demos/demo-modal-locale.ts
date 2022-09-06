@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { CalendarModal, CalendarModalOptions } from '../ion2-calendar';
 
@@ -16,7 +16,7 @@ export class DemoModalLocaleComponent {
   date: Date = new Date();
 
   constructor(public modalCtrl: ModalController) {
-    moment.locale('zh-cn');
+    dayjs.locale('zh-cn');
   }
 
   async openCalendar() {
@@ -24,7 +24,7 @@ export class DemoModalLocaleComponent {
       title: 'LOCALE',
       defaultDate: this.date,
       monthFormat: 'yyyy 年 MM 月',
-      weekdays: moment.weekdaysShort(),
+      weekdays: dayjs.weekdaysShort(),
       weekStart: 1,
     };
 

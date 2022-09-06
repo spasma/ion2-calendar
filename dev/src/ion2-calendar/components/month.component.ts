@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef, Input, Output, EventEmitter, forwardRef, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { CalendarDay, CalendarMonth, CalendarOriginal, PickMode } from '../calendar.model';
+import { CalendarDay, CalendarMonth, CalendarOriginal } from '../calendar.model';
 import { defaults, pickModes } from '../config';
 
 export const MONTH_VALUE_ACCESSOR: any = {
@@ -81,7 +81,7 @@ export class MonthComponent implements ControlValueAccessor, AfterViewInit {
   @Input()
   month: CalendarMonth;
   @Input()
-  pickMode: PickMode;
+  pickMode: any;
   @Input()
   isSaveHistory: boolean;
   @Input()
