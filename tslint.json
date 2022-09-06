@@ -1,6 +1,5 @@
 {
   "extends": [
-    "tslint-eslint-rules"
   ],
   "rules": {
     "align": [

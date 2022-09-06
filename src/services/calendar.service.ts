@@ -1,5 +1,4 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-import * as moment from 'moment';
 
 import {
   CalendarOriginal,
@@ -11,6 +10,7 @@ import {
 } from '../calendar.model';
 import { defaults, pickModes } from '../config';
 import { DEFAULT_CALENDAR_OPTIONS } from './calendar-options.provider';
+import * as dayjs from "dayjs";
 
 const isBoolean = (input: any) => input === true || input === false;
 
@@ -97,7 +97,7 @@ export class CalendarService {
     const year = date.getFullYear();
     const month = date.getMonth();
     const firstWeek = new Date(year, month, 1).getDay();
-    const howManyDays = moment(time).daysInMonth();
+    const howManyDays = dayjs(time).daysInMonth();
     return {
       year,
       month,
@@ -114,19 +114,19 @@ export class CalendarService {
   }
 
   createCalendarDay(time: number, opt: CalendarModalOptions, month?: number): CalendarDay {
-    let _time = moment(time);
-    let date = moment(time);
-    let isToday = moment().isSame(_time, 'days');
+    let _time = dayjs(time);
+    let date = dayjs(time);
+    let isToday = dayjs().isSame(_time, 'days');
     let dayConfig = this.findDayConfig(_time, opt);
-    let _rangeBeg = moment(opt.from).valueOf();
-    let _rangeEnd = moment(opt.to).valueOf();
+    let _rangeBeg = dayjs(opt.from).valueOf();
+    let _rangeEnd = dayjs(opt.to).valueOf();
     let isBetween = true;
     let disableWee = opt.disableWeeks.indexOf(_time.toDate().getDay()) !== -1;
     if (_rangeBeg > 0 && _rangeEnd > 0) {
       if (!opt.canBackwardsSelected) {
         isBetween = !_time.isBetween(_rangeBeg, _rangeEnd, 'days', '[]');
       } else {
-        isBetween = moment(_time).isBefore(_rangeBeg) ? false : isBetween;
+        isBetween = dayjs(_time).isBefore(_rangeBeg) ? false : isBetween;
       }
     } else if (_rangeBeg > 0 && _rangeEnd === 0) {
       if (!opt.canBackwardsSelected) {
@@ -194,11 +194,11 @@ export class CalendarService {
 
     if (opt.showAdjacentMonthDay) {
       const _booleanMap = days.map(e => !!e);
-      const thisMonth = moment(original.time).month();
+      const thisMonth = dayjs(original.time).month();
       let startOffsetIndex = _booleanMap.indexOf(true) - 1;
       let endOffsetIndex = _booleanMap.lastIndexOf(true) + 1;
       for (startOffsetIndex; startOffsetIndex >= 0; startOffsetIndex--) {
-        const dayBefore = moment(days[startOffsetIndex + 1].time)
+        const dayBefore = dayjs(days[startOffsetIndex + 1].time)
           .clone()
           .subtract(1, 'd');
         days[startOffsetIndex] = this.createCalendarDay(dayBefore.valueOf(), opt, thisMonth);
@@ -206,7 +206,7 @@ export class CalendarService {
 
       if (!(_booleanMap.length % 7 === 0 && _booleanMap[_booleanMap.length - 1])) {
         for (endOffsetIndex; endOffsetIndex < days.length + (endOffsetIndex % 7); endOffsetIndex++) {
-          const dayAfter = moment(days[endOffsetIndex - 1].time)
+          const dayAfter = dayjs(days[endOffsetIndex - 1].time)
             .clone()
             .add(1, 'd');
           days[endOffsetIndex] = this.createCalendarDay(dayAfter.valueOf(), opt, thisMonth);
@@ -227,7 +227,7 @@ export class CalendarService {
     let _startMonth = new Date(_start.getFullYear(), _start.getMonth(), 1).getTime();
 
     for (let i = 0; i < monthsNum; i++) {
-      let time = moment(_startMonth)
+      let time = dayjs(_startMonth)
         .add(i, 'M')
         .valueOf();
       let originalCalendar = this.createOriginalCalendar(time);
@@ -259,15 +259,15 @@ export class CalendarService {
   }
 
   multiFormat(time: number): CalendarResult {
-    const _moment = moment(time);
+    const _dayjs = dayjs(time);
     return {
-      time: _moment.valueOf(),
-      unix: _moment.unix(),
-      dateObj: _moment.toDate(),
-      string: _moment.format(defaults.DATE_FORMAT),
-      years: _moment.year(),
-      months: _moment.month() + 1,
-      date: _moment.date(),
+      time: _dayjs.valueOf(),
+      unix: _dayjs.unix(),
+      dateObj: _dayjs.toDate(),
+      string: _dayjs.format(defaults.DATE_FORMAT),
+      years: _dayjs.year(),
+      months: _dayjs.month() + 1,
+      date: _dayjs.date(),
     };
   }
 }
