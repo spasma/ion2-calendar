@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const clean = require('gulp-clean');
 const ext_replace = require('gulp-ext-replace');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const bump = require('gulp-bump');
 
 const paths = {
