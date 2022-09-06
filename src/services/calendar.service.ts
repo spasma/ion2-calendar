@@ -1,4 +1,7 @@
 import { Inject, Injectable, Optional } from '@angular/core';
+import * as dayjs from 'dayjs';
+import * as isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 
 import {
   CalendarOriginal,
@@ -10,7 +13,6 @@ import {
 } from '../calendar.model';
 import { defaults, pickModes } from '../config';
 import { DEFAULT_CALENDAR_OPTIONS } from './calendar-options.provider';
-import * as dayjs from "dayjs";
 
 const isBoolean = (input: any) => input === true || input === false;
 

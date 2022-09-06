@@ -12,8 +12,8 @@ import {
 import { NavParams, ModalController, IonContent } from '@ionic/angular';
 import { CalendarDay, CalendarMonth, CalendarModalOptions } from '../calendar.model';
 import { CalendarService } from '../services/calendar.service';
+import * as dayjs from 'dayjs';
 import { pickModes } from '../config';
-import * as dayjs from "dayjs";
 
 const NUM_OF_MONTHS_TO_CREATE = 3;
 

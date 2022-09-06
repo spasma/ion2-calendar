@@ -12,11 +12,12 @@ import {
 import { CalendarService } from '../services/calendar.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
+import * as dayjs from 'dayjs';
+import * as toObject from 'dayjs/plugin/toObject';
+dayjs.extend(toObject);
+
 import { defaults, pickModes } from '../config';
 import {isIonIconsV4} from "../utils/icons";
-import * as dayjs from "dayjs";
-import * as toObject from 'dayjs/plugin/toObject';
-dayjs.extend(toObject)
 
 export const ION_CAL_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -313,7 +314,7 @@ export class CalendarComponent implements ControlValueAccessor, OnInit {
 
   _onTouched: Function = () => {};
 
-  _payloadToTimeNumber(value: CalendarComponentPayloadTypes): number {
+  _payloadToTimeNumber(value: any | CalendarComponentPayloadTypes): number {
     let date;
     if (this.type === 'string') {
       date = dayjs(value, this.format);
@@ -362,7 +363,6 @@ export class CalendarComponent implements ControlValueAccessor, OnInit {
       case 'object':
         return date.toObject();
     }
-    return date;
   }
 
   writeValue(obj: any): void {
